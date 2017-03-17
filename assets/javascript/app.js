@@ -1,25 +1,3 @@
-$('#notif').click(function(){
-    if($('.mdl-layout__drawer-right').hasClass('active')){       
-        $('.mdl-layout__drawer-right').removeClass('active'); 
-    }
-    else{
-        $('.mdl-layout__drawer-right').addClass('active'); 
-    }
-});
-
-$('.mdl-layout__obfuscator-right').click(function(){
-    if($('.mdl-layout__drawer-right').hasClass('active')){       
-        $('.mdl-layout__drawer-right').removeClass('active'); 
-    }
-    else{
-        $('.mdl-layout__drawer-right').addClass('active'); 
-    }
-});
-
-
-$(document).on("click",".add-review-link", function(){
-    addReviewModal();
-});
 function addReviewModal(){
     var formContainer = $("<div>");
     formContainer.append("<h3>Add a Review</h3>");
@@ -30,9 +8,6 @@ function addReviewModal(){
     formContainer.append("<br>Location* <button id='useLocation'>Use Current Location</button><button id='enterAddress'>Enter Address</button>");
     formContainer.append("<br><button id='submitReview'>Add Review</button>");
     openModal(formContainer);
-    $("body").on("click", ".modalBG", function(){
-        $("div.modalContainer").remove();
-    });
     $("body").on("click", "#useLocation", function(){
         $("#useLocation").data("location", currentLocation);
     });
@@ -78,7 +53,6 @@ function processReviewFromModal(location){
     $("div.modalContainer").remove();
 }//function processReviewFromModal
 
-
 function openModal(content){
     var modalContainer = $("<div>").addClass("modalContainer");
     var modalBG = $("<div>").addClass("modalBG");
@@ -87,22 +61,65 @@ function openModal(content){
     modalContainer.append(modalContent);
     modalContent.append(content);
     $("body").append(modalContainer);
+    $("body").on("click", ".modalBG", function(){
+        $("div.modalContainer").remove();
+    });
 }
 
-//Color the thumbs up or down
-$(document).on("click","#thumbup", function(){
-    if ($(this).hasClass('mdl-button mdl-js-button mdl-button--icon')){
-    $(this).toggleClass('mdl-button--colored');
-    componentHandler.upgradeDom();
+function promptForLogin(){
+    if(!instagramAuthToken){
+        var formContainer = $("<div>");
+        formContainer.append("<h3>Welcome to That's My Jam</h3>");
+        formContainer.append("<p>Log in with your Instagram account to see your friends' and your own delicious meals nearby.</p>");
+        formContainer.append("<button id='loginFromModal'>Login with Instagram to Begin</button>");
+        $(document).on("click","#loginFromModal", function(){
+            window.location = "https://api.instagram.com/oauth/authorize/?client_id=7c89da9d27cd49f9a18e2d6155032011&redirect_uri=https://jesseharold.github.io/thatsmyjam/&response_type=token&scope=follower_list+public_content";
+        });
+        openModal(formContainer);
     }
+}
+
+$(document).ready(function(){
+    //Color the thumbs up or down
+    $(document).on("click","#thumbup", function(){
+        if ($(this).hasClass("mdl-button mdl-js-button mdl-button--icon")){
+        $(this).toggleClass("mdl-button--colored");
+        componentHandler.upgradeDom();
+        }
+    });
+    $(document).on("click","#thumbdown", function(){
+        if ($(this).hasClass("mdl-button mdl-js-button mdl-button--icon")){
+        $(this).toggleClass("mdl-button--colored");
+        componentHandler.upgradeDom();
+        }
+    });
+
+    $("#notif").click(function(){
+        if($(".mdl-layout__drawer-right").hasClass("active")){       
+            $(".mdl-layout__drawer-right").removeClass("active"); 
+        }
+        else{
+            $(".mdl-layout__drawer-right").addClass("active"); 
+        }
+    });
+
+    $(".mdl-layout__obfuscator-right").click(function(){
+        if($(".mdl-layout__drawer-right").hasClass("active")){       
+            $(".mdl-layout__drawer-right").removeClass("active"); 
+        }
+        else{
+            $(".mdl-layout__drawer-right").addClass("active"); 
+        }
+    });
+    $("#logout").click(function(){
+        $.removeCookie('tmjAuthToken', { path: '/' });
+        $("#login").show();
+        $("#logout").hide();
+        instagramAuthToken = "";
+    });
+    $(document).on("click",".add-review-link", function(){
+        addReviewModal();
+    });
+
+    promptForLogin();
 });
-
-$(document).on("click","#thumbdown", function(){
-    if ($(this).hasClass('mdl-button mdl-js-button mdl-button--icon')){
-    $(this).toggleClass('mdl-button--colored');
-    componentHandler.upgradeDom();
-    }
-});
-
-
-

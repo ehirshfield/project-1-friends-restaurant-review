@@ -1,23 +1,26 @@
 # project-1 That's My Jam
-Group Project
 
-An app that lets a user see their friends' restaurant reviews on a map, in order find nearby restaurants they'd like to try.
+An app that lets a user see their friends' restaurant reviews and food pictures on a map, in order find nearby restaurants they'd like to try.
 Users can see their friends' instagram food photos that were taken in that location.
 Users can also add their own instragram food photos, using #thatsmyjam so their friends in the area can see how good their food was.
 
 using google map API
 and instragram API
 and firebase
+developed by @jesseharold @billbitt and @ehirshfield
 
+see it hosted here:
+https://jesseharold.github.io/thatsmyjam/
 
 ## program flow:
 
 ### to add an instagram photo
 * user takes a food photo and posts in their instagram account 
 * user must use the hashtag #thatsmyjam 
-* and have a location set for the post
+* user must have a location set for the post
 
-### user logs in w instagram:
+### to use the app
+* user logs in to the app w their instagram credentials
 * look up their IG username in our DB of users, add if new user
 * retrieve their user info and friends list from IG
 * add / update their user info and friends list in our DB

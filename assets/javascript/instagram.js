@@ -17,10 +17,8 @@ function checkForAuthToken(){
         var authTokenString = location.href.split("#").pop();
         var authToken = authTokenString.split("=");
         if (authToken[0] === "access_token"){
-            $("#login").hide();
-            instagramAuthToken = authToken[1];
-            document.cookie = "authToken=" + instagramAuthToken;
-            initializeApp();
+            console.log("found in url");
+            loggedIn(authToken[1]);
         }
     } else {
         //look for token value in cookies
@@ -30,19 +28,30 @@ function checkForAuthToken(){
             while (cookie.charAt(0) === ' ') {
                 cookie = cookie.substring(1);
             }
-            if (cookie.indexOf("authToken=") === 0) {
-                instagramAuthToken = cookie.substring(10, cookie.length);
-                initializeApp();
+            if (cookie.indexOf("tmjAuthToken=") === 0) {
+                console.log("found in cookie");
+                loggedIn(cookie.substring(13, cookie.length));
+            } else {
+                console.log("did not find AuthToken");
             }
         }
     }
+}
+
+function loggedIn(tokenValue){
+    instagramAuthToken = tokenValue;
+    $("#login").hide();
+    $("#logout").show();
+    document.cookie = "tmjAuthToken=" + tokenValue;
+    console.log("found AuthToken", tokenValue);
+    initializeApp();
 }
 
 function initializeApp(){
     //listen for changes to DB to keep localCopyRestaurants updated
     database.ref("restaurants").on("value", function(snapshot){
         localCopyRestaurants = snapshot.val();
-        //console.log(localCopyRestaurants);
+        console.log("localCopyRestaurants: ", localCopyRestaurants);
         instagramDataReady++;
         if(instagramDataReady === 2){
             //check to see if both sets of data are ready
@@ -71,6 +80,7 @@ function getOwnUserInfo(){
     })
     .done(function(response) {
         currentUserId = response.data.id;
+        $("#userID").text(response.data.username);
         updateUser(response.data);
     })
     .fail(function(error){
